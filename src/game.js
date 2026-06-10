@@ -4,6 +4,7 @@ const RANK_NAME = { 1: "A", 11: "J", 12: "Q", 13: "K" };
 const SUIT_NAME = { C: "梅花", D: "方塊", H: "紅心", S: "黑桃" };
 let CARD_GAP = 27;
 const DRAG_THRESHOLD = 6;
+const SNAP_MIN_OVERLAP = 0.15;
 
 const board = document.getElementById("board");
 const tableauEl = document.getElementById("tableau");
@@ -493,12 +494,35 @@ function onPointerUp(event) {
   }
 
   const dragData = pointerDrag;
+  const headRect = dragData.ghost?.firstElementChild?.getBoundingClientRect() || null;
   finishDragVisuals();
 
-  const target = dropTargetAt(event.clientX, event.clientY);
-  const moved = tryMove(dragData.cards, dragData.location, target);
+  const targets = headRect ? overlapTargets(headRect, dragData.location.column) : [];
+  const pointerTarget = dropTargetAt(event.clientX, event.clientY);
+  if (pointerTarget) targets.push(pointerTarget);
+
+  const moved = targets.some(target => tryMove(dragData.cards, dragData.location, target));
   if (!moved) show("這一步不能這樣移動。");
   render();
+}
+
+function overlapTargets(headRect, fromColumn) {
+  const cardArea = headRect.width * headRect.height;
+  const hits = [];
+
+  document.querySelectorAll(".column").forEach(col => {
+    const column = Number(col.dataset.column);
+    if (column === fromColumn) return;
+
+    const rect = col.getBoundingClientRect();
+    const w = Math.min(headRect.right, rect.right) - Math.max(headRect.left, rect.left);
+    const h = Math.min(headRect.bottom, rect.bottom) - Math.max(headRect.top, rect.top);
+    if (w > 0 && h > 0 && (w * h) / cardArea >= SNAP_MIN_OVERLAP) hits.push({ column, area: w * h });
+  });
+
+  return hits
+    .sort((a, b) => b.area - a.area)
+    .map(hit => ({ type: "column", column: hit.column }));
 }
 
 function cancelPointerDrag() {
