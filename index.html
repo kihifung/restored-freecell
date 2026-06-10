@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>土木工程 蜘蛛紙牌 - 還原版</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="toolbar">
+        <div class="title">
+          <h1>土木工程</h1>
+          <span id="status">蜘蛛紙牌</span>
+        </div>
+        <div class="actions">
+          <button class="mode active" data-suits="4" type="button" title="四種花色">4 種花色</button>
+          <button class="mode" data-suits="2" type="button" title="兩種花色">2 種花色</button>
+          <button class="mode" data-suits="1" type="button" title="單一花色">單一花色</button>
+          <button id="deal" type="button" title="發下一列牌">發牌</button>
+          <button id="hint" type="button" title="提示下一步可移動的牌">提示</button>
+          <button id="newGame" type="button" title="開始新局">新局</button>
+          <button id="restart" type="button" title="重新開始本局">重新開始</button>
+          <button id="undo" type="button" title="復原上一動">復原</button>
+        </div>
+      </header>
+
+      <section class="board" id="board" aria-label="蜘蛛紙牌牌桌">
+        <div class="tableau" id="tableau"></div>
+
+        <div class="scorebar" aria-label="牌局資訊">
+          <div class="score-items">
+            <div class="completed" id="completed" aria-label="已完成的牌組">
+              <span>已完成</span>
+              <strong id="completedCount">0</strong>
+            </div>
+            <div class="stat" aria-label="目前分數">
+              <span>分數</span>
+              <strong id="score">500</strong>
+            </div>
+            <div class="stat" aria-label="移動次數">
+              <span>移動</span>
+              <strong id="moves">0</strong>
+            </div>
+          </div>
+          <button class="stock" id="stock" type="button" title="發下一列牌">
+            <span id="stockCount">5</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="src/game.js"></script>
+  </body>
+</html>
