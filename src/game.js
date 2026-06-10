@@ -2,7 +2,7 @@ const SUITS = ["C", "D", "H", "S"];
 const SUIT_OFFSET = { C: 0, D: 13, H: 26, S: 39 };
 const RANK_NAME = { 1: "A", 11: "J", 12: "Q", 13: "K" };
 const SUIT_NAME = { C: "梅花", D: "方塊", H: "紅心", S: "黑桃" };
-const CARD_GAP = 27;
+let CARD_GAP = 27;
 const DRAG_THRESHOLD = 6;
 
 const board = document.getElementById("board");
@@ -548,6 +548,11 @@ function randomSeed() {
   return Math.floor(Math.random() * 1000000) + 1;
 }
 
+function syncCardGap() {
+  const slotWidth = parseFloat(getComputedStyle(tableauEl).gridTemplateColumns);
+  if (slotWidth > 0) CARD_GAP = Math.min(27, Math.round(slotWidth * 0.39));
+}
+
 function start(seed = gameNo, count = suitCount) {
   gameNo = seed;
   suitCount = count;
@@ -606,4 +611,14 @@ window.spiderDebug = {
   canStackOn
 };
 
+let resizeTimer = 0;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    syncCardGap();
+    render();
+  }, 120);
+});
+
+syncCardGap();
 start(randomSeed(), 4);

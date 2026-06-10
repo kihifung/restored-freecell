@@ -6,9 +6,10 @@
   --text: #f3fff8;
   --muted: #b8d8c6;
   --gold: #e7c35e;
-  --slot-w: clamp(44px, 7.4vw, 71px);
+  --app-pad: clamp(6px, 1.2vw, 12px);
+  --slot-w: min(clamp(44px, 7.4vw, 71px), calc((100vw - 2 * var(--app-pad) - 11 * var(--gap)) / 10));
   --slot-h: calc(var(--slot-w) * 1.403);
-  --gap: clamp(5px, .85vw, 12px);
+  --gap: clamp(4px, .85vw, 12px);
 }
 
 * {
@@ -44,10 +45,12 @@ button.active {
 }
 
 .app {
-  width: min(1120px, 100vw);
+  display: flex;
+  flex-direction: column;
+  width: min(1120px, 100%);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 12px;
+  padding: var(--app-pad);
   background:
     linear-gradient(rgba(0, 0, 0, .08), rgba(0, 0, 0, .18)),
     var(--felt);
@@ -82,14 +85,20 @@ h1 {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+}
+
+h1,
+.actions button {
+  white-space: nowrap;
 }
 
 .board {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 72px);
+  flex: 1;
   padding: var(--gap);
   border: 1px solid rgba(255, 255, 255, .12);
   background-image: url("assets/FELT.png");
@@ -288,18 +297,63 @@ h1 {
   opacity: 1;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 980px) {
   .toolbar {
-    align-items: flex-start;
     flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .title {
+    gap: 8px;
+  }
+
+  #status {
+    font-size: 13px;
   }
 
   .actions {
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
   }
 
   button {
-    flex: 1;
     min-width: 0;
+    height: 38px;
+    padding: 0 4px;
+    font-size: 14px;
+  }
+
+  .scorebar {
+    gap: 6px;
+  }
+
+  .score-items {
+    flex: 1;
+    gap: 6px;
+  }
+
+  .completed,
+  .stat {
+    width: auto;
+    flex: 1;
+    padding: 4px;
+  }
+
+  .completed strong,
+  .stat strong {
+    font-size: 18px;
+  }
+
+  #stockCount {
+    width: 22px;
+    height: 22px;
+    font-size: 13px;
   }
 }
