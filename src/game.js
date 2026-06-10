@@ -551,6 +551,8 @@ function randomSeed() {
 function syncCardGap() {
   const slotWidth = parseFloat(getComputedStyle(tableauEl).gridTemplateColumns);
   if (slotWidth > 0) CARD_GAP = Math.min(27, Math.round(slotWidth * 0.39));
+  // 預留「初始 6 張 + 完整一條龍 13 張」共 19 張的高度，讓資訊欄停在固定位置
+  tableauEl.style.minHeight = `calc(var(--slot-h) + ${CARD_GAP * 18}px)`;
 }
 
 function start(seed = gameNo, count = suitCount) {
