@@ -1,43 +1,50 @@
-# 土木工程 Spider Solitaire - restored source
+# Spider Solitaire - 原始碼還原
 
-This folder is a source-level reconstruction of:
+此資料夾是針對2000年的Spider Solitaire的原始碼級別重建：
 
-`C:\Users\USER\文件\kihifung\game\FreeCell\土木工程.exe`
+原始執行檔是一個來自 Windows Plus!/ME 時代的 32 位元 Windows PE 檔案。由於該檔案不包含原始的 C/C++ 原始碼文本，本專案透過提取其內嵌資源，並使用可讀性高的 HTML、CSS 與 JavaScript 重建蜘蛛紙牌（Spider Solitaire）的邏輯，藉此還原這款可遊玩的遊戲。
 
-The original executable is a 32-bit Windows PE file from the Windows Plus!/ME era. It does not contain the original C/C++ source text, so this project restores the playable game by extracting the embedded resources and rebuilding the Spider Solitaire logic in readable HTML, CSS, and JavaScript.
+## 還原內容
 
-## What was recovered
+- 原始卡牌點陣圖（Bitmap）資源：從 `assets/cards/CARD1.bmp` 到 `assets/cards/CARD52.bmp`
+- 瀏覽器相容的 PNG 複本：從 `assets/cards-png/CARD1.png` 到 `assets/cards-png/CARD52.png`
+- 原始卡牌背面與桌面背景點陣圖資源
+- 原始 WAV 音效資源：`assets/sounds/*.wav`
+- 使用還原資產實作的可遊玩蜘蛛紙牌
 
-- Original card bitmap resources: `assets/cards/CARD1.bmp` through `assets/cards/CARD52.bmp`
-- Browser-safe PNG copies: `assets/cards-png/CARD1.png` through `assets/cards-png/CARD52.png`
-- Original card back and felt bitmap resources
-- Original WAV resources: `assets/sounds/*.wav`
-- A playable Spider Solitaire implementation using the recovered assets
+## 實作規則
 
-## Rules implemented
+- 遊戲使用 104 張卡牌：四花色模式使用兩副牌；雙花色模式下每種花色有四組重複；單花色模式則為八組重複。
+- 54 張牌分發至 10 個牌堆欄位（Tableau columns）：前 4 欄各 6 張，後 6 欄各 5 張。
+- 初始狀態下，僅每個欄位最頂端的卡牌為面朝上。
+- 剩餘 50 張牌組成 5 組備用牌堆，每組發牌會向每個欄位分發一張面朝上的卡牌。
+- 牌堆卡牌可無視花色，依點數由大到小遞減堆疊。
+- 僅有「面朝上」且「同花色」的遞減序列可整疊移動。
+- 空欄位可放置任何可移動的單牌或同花色序列。
+- 完成一組同花色 K 到 A 的序列後，該序列會自動移除。
+- 若有任何牌堆欄位為空，則無法執行備用牌堆發牌。
+- 計分方式沿用經典 Windows 蜘蛛紙牌風格：初始 500 分，每次移動 -1 分，每次復原（Undo） -1 分，每完成一組同花色序列 +100 分。
+- 每次開新遊戲（含頁面載入與切換花色模式）皆以隨機局號發牌，牌序隨機分布；同一局號可重現相同牌局，因此「重玩此局」會還原完全相同的開局。
 
-- The game uses 104 cards: two decks for 4-suit mode, four duplicated sets per suit for 2-suit mode, or eight duplicated sets for 1-suit mode.
-- 54 cards are dealt into 10 tableau columns: the first 4 columns receive 6 cards and the last 6 receive 5 cards.
-- Only the top card of each initial column is face up.
-- The remaining 50 cards form 5 stock deals, each dealing one face-up card to every column.
-- Tableau cards can be stacked downward by rank regardless of suit.
-- Only face-up same-suit descending sequences can move together.
-- Empty columns can accept any movable card or same-suit sequence.
-- A complete same-suit K-to-A run is removed automatically.
-- Stock cannot be dealt while any tableau column is empty.
-- Scoring follows the classic Windows Spider Solitaire style: 500 initial points, -1 for each move, -1 for each undo, and +100 for each completed same-suit run.
+## 卡牌資源順序
 
-## Card resource order
+- `CARD1` - `CARD13`：梅花 A-K
+- `CARD14` - `CARD26`：方塊 A-K
+- `CARD27` - `CARD39`：紅心 A-K
+- `CARD40` - `CARD52`：黑桃 A-K
 
-- `CARD1` - `CARD13`: clubs A-K
-- `CARD14` - `CARD26`: diamonds A-K
-- `CARD27` - `CARD39`: hearts A-K
-- `CARD40` - `CARD52`: spades A-K
+## 執行方式
 
-## Run
+在瀏覽器中開啟 `index.html`。
 
-Open `index.html` in a browser.
+## 遊戲設計文件
 
-## Notes
+遊戲機制、各規則的設計用意、蜘蛛紙牌的歷史淵源與同類遊戲比較，詳見 [GAME_DESIGN.md](GAME_DESIGN.md)。
 
-The reconstructed code preserves the original visual assets, but it is not a byte-for-byte decompilation of the original native Win32 program. A perfect restoration would require debug symbols or the original source files, which are not present in the executable.
+## 備註
+
+重建的程式碼完整保留了原始視覺資產，但並非對原始原生 Win32 程式進行位元組對應（byte-for-byte）的反編譯。完美的還原需要除錯符號（debug symbols）或原始原始碼檔案，而這些資訊並不存在於該執行檔中。
+
+## 部署結果
+
+- [連結](https://restored-freecell.netlify.app/)
