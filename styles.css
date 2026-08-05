@@ -46,6 +46,7 @@ button.active {
 }
 
 .app {
+  user-select: none;
   display: flex;
   flex-direction: column;
   width: min(1120px, 100%);
@@ -218,6 +219,7 @@ h1,
   cursor: pointer;
   touch-action: none;
   user-select: none;
+  -webkit-user-drag: none;
   transition: transform .08s ease, filter .08s ease;
 }
 

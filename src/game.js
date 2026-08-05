@@ -417,6 +417,9 @@ function targetFromElement(element) {
 function onPointerDown(event, card, location) {
   if (event.button !== 0) return;
 
+  // 新互動開始：上一輪的 click（若有）此刻必已發生，殘留旗標只會誤吞這一輪的點擊
+  suppressNextClick = false;
+
   const cards = getMovableCards(location);
   if (!cards.length) return;
 
@@ -433,6 +436,14 @@ function onPointerDown(event, card, location) {
     active: false,
     ghost: null
   };
+
+  // 阻止瀏覽器啟動原生拖放／文字選取（否則會出現 🚫 游標並吃掉 pointer 事件流）
+  event.preventDefault();
+  try {
+    event.currentTarget.setPointerCapture(event.pointerId);
+  } catch {
+    // 指標已失效時忽略即可
+  }
 
   document.addEventListener("pointermove", onPointerMove);
   document.addEventListener("pointerup", onPointerUp, { once: true });
@@ -527,6 +538,8 @@ function overlapTargets(headRect, fromColumn) {
 
 function cancelPointerDrag() {
   document.removeEventListener("pointermove", onPointerMove);
+  // 拖曳被中斷時不會有後續 click，旗標若殘留會吞掉下一次點擊
+  suppressNextClick = false;
   finishDragVisuals();
   render();
 }
@@ -593,6 +606,8 @@ function start(seed = gameNo, count = suitCount) {
 
 stockEl.addEventListener("click", dealFromStock);
 board.addEventListener("click", onBoardClick);
+// 全域保險：頁面內不允許任何原生拖放（🚫 不可放置游標的來源）
+document.addEventListener("dragstart", event => event.preventDefault());
 
 document.querySelectorAll(".mode").forEach(button => {
   button.addEventListener("click", () => start(randomSeed(), Number(button.dataset.suits)));
